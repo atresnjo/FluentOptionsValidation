@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/tresnjoadnan/FluentOptionsValidation/_apis/build/status/atresnjo.FluentOptionsValidation?branchName=master)](https://dev.azure.com/tresnjoadnan/FluentOptionsValidation/_build/latest?definitionId=1&branchName=master)
+
 # Installation
 
 ```
