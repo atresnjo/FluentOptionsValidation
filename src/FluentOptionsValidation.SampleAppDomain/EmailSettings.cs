@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace FluentOptionsValidation.SampleApp
+namespace FluentOptionsValidation.SampleAppDomain
 {
     public class EmailSettings
     {

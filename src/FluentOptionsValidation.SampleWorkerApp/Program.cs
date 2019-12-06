@@ -1,14 +1,11 @@
-using System.Reflection;
 using FluentOptionsValidation.SampleAppDomain;
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace FluentOptionsValidation.SampleApp
+namespace FluentOptionsValidation.SampleWorkerApp
 {
     public class Startup
     {
@@ -21,23 +18,31 @@ namespace FluentOptionsValidation.SampleApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             services.AddValidatorsFromAssemblyContaining(typeof(EmailSettings));
             services.ConfigureFluentOptions<EmailSettings>(Configuration,
-                configuration => configuration.AbortStartupOnError = true);
+                configuration => configuration.AbortStartupOnError = false);
             services.ConfigureFluentOptions<RedisSettings>(Configuration,
                 configuration => configuration.AbortStartupOnError = true);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // Must be declared
+        public void Configure()
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
+    }
+
+    public class Program
+    {
+
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureServices((hostContext, services) => { services.AddHostedService<Worker>(); });
     }
 }

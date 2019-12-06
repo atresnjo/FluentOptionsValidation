@@ -18,7 +18,6 @@ namespace FluentOptionsValidation
         /// <param name="config"></param>
         /// <param name="section">Section from the configuration file</param>
         /// <param name="configurationExpression"></param>
-
         public static IServiceCollection ConfigureFluentOptions<TOptions>(
             this IServiceCollection services,
             IConfiguration config, string section,
@@ -36,7 +35,6 @@ namespace FluentOptionsValidation
         /// <param name="config"></param>
         /// <param name="configurationExpression"></param>
         /// <returns></returns>
-
         public static IServiceCollection ConfigureFluentOptions<TOptions>(
             this IServiceCollection services,
             IConfiguration config,
