@@ -25,21 +25,7 @@ namespace FluentOptionsValidation
             Action<FluentOptionsConfiguration> configurationExpression = null)
             where TOptions : class, new()
         {
-            var fluentOptionsConfiguration = new FluentOptionsConfiguration();
-            configurationExpression?.Invoke(fluentOptionsConfiguration);
-            services.Configure<TOptions>(config.GetSection(section));
-            services.AddTransient<IStartupFilter, FluentOptionsStartupFilter<TOptions>>(provider =>
-            {
-                var ser = provider.GetService<IValidator<TOptions>>();
-                var options = provider.GetService<IOptions<TOptions>>();
-                var logger = provider.GetService<ILogger<TOptions>>();
-                var validationFilter = new FluentOptionsStartupFilter<TOptions>(ser, options, logger)
-                    {Configuration = fluentOptionsConfiguration};
-
-                return validationFilter;
-            });
-
-            return services;
+            return AddFluentOptions<TOptions>(services, config, section, configurationExpression);
         }
 
         /// <summary>
@@ -57,15 +43,23 @@ namespace FluentOptionsValidation
             Action<FluentOptionsConfiguration> configurationExpression = null)
             where TOptions : class, new()
         {
+            var section = typeof(TOptions).Name;
+            return AddFluentOptions<TOptions>(services, config, section, configurationExpression);
+        }
+
+        private static IServiceCollection AddFluentOptions<TOptions>(IServiceCollection services,
+            IConfiguration config, string section, Action<FluentOptionsConfiguration> configurationExpression = null)
+            where TOptions : class, new()
+        {
             var fluentOptionsConfiguration = new FluentOptionsConfiguration();
             configurationExpression?.Invoke(fluentOptionsConfiguration);
-            services.Configure<TOptions>(config.GetSection(typeof(TOptions).Name));
+            services.Configure<TOptions>(config.GetSection(section));
             services.AddTransient<IStartupFilter, FluentOptionsStartupFilter<TOptions>>(provider =>
             {
-                var ser = provider.GetService<IValidator<TOptions>>();
+                var validator = provider.GetService<IValidator<TOptions>>();
                 var options = provider.GetService<IOptions<TOptions>>();
                 var logger = provider.GetService<ILogger<TOptions>>();
-                var validationFilter = new FluentOptionsStartupFilter<TOptions>(ser, options, logger)
+                var validationFilter = new FluentOptionsStartupFilter<TOptions>(validator, options, logger)
                     {Configuration = fluentOptionsConfiguration};
 
                 return validationFilter;
