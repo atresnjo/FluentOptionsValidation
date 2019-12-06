@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "FluentOptionsValidation.SampleWorkerApp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
